@@ -12,11 +12,11 @@ Alternative installation is possible without local dependencies relying on [Dock
 
 Clone the repository
 
-    git clone git@gitlab.com:yukk3/topup-app.git
+    git clone git@github.com:widiagie/yukk-transaction.git
 
 Switch to the repo folder
 
-    cd topup-app
+    cd yukk-transaction
 
 Install all the dependencies using composer
 
@@ -42,8 +42,8 @@ You can now access the server at http://localhost:8000
 
 **TL;DR command list**
 
-    git clone git@gitlab.com:yukk3/topup-app.git
-    cd topup-app
+    git clone git@github.com:widiagie/yukk-transaction.git
+    cd yukk-transaction
     composer install
     cp .env.example .env
     php artisan key:generate
