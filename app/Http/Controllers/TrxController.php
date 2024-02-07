@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Models\Transaction;
+use Illuminate\Support\Facades\Storage;
 
 class TrxController extends Controller
 {
@@ -21,15 +22,42 @@ class TrxController extends Controller
         return view('transaction.trx');
     }
 
-    public function trxlist(): View
+    public function trxlist(Request $request): View
     {
-        $admin = DB::table('users')
-            ->where('email', 'widi@example.com')
+        $id = Auth::user()->id;
+        $user = DB::table('users')
+            ->where('id', $id)
             ->first();
+        
+        if ($user->id === $id) {
+            $trx = DB::table('transactions');
+            $trx = $trx->where('trx_user_id' , '=' , $id);
+            if($request->t) {
+                $trx = $trx->where('trx_type', '=', $request->t);
+            }
+            if($request->q) {
+                $trx = $trx->where('trx_code', 'like', "%{$request->q}%");
+                $trx = $trx->orWhere('trx_description', 'like', "%{$request->q}%");
+            }
+                
+            $trx = $trx->orderBy('created_at', 'desc');
+            $trx = $trx->paginate(5);
 
-        if ($admin) {
-            $users = DB::table('users')->paginate(20);
-            return view('profile.transaction', ['users' => $users]);
+            $topupSum = DB::table('transactions')
+                ->where(['trx_type' => 'topup', 'trx_user_id' => $id])
+                ->sum('trx_amount');
+            $paySum = DB::table('transactions')
+                ->where(['trx_type' => 'pay', 'trx_user_id' => $id])
+                ->sum('trx_amount');
+
+            $balance = $topupSum - $paySum;
+
+            return view('profile.transaction', 
+                [   
+                    'transaction' => $trx, 
+                    'balance' => $balance,
+                    'filter' => $request->t,
+                ]);
         }
 
         return view('notfound');
@@ -41,19 +69,17 @@ class TrxController extends Controller
     public function store(Request $request) : RedirectResponse
     {
         $id = Auth::user()->id;
-        $user = DB::table('users')
-            ->where('id', $id)
-            ->first();
-
-        // dd($request->trx_amount);
+    
+        $path = Storage::putFile('trxFiles', $request->file('trx_file'));
+        $fileName = basename($path);
 
         Transaction::create([
             'trx_user_id' => $id,
-            'trx_code' => 'TRX-'.rand(),
+            'trx_code' => 'TRX-'.$request->trx_type.'-'.rand(),
             'trx_type' => $request->trx_type,
             'trx_amount' => $request->trx_amount,
             'trx_description' => $request->trx_description,
-            'trx_file' => $request->trx_file,
+            'trx_file' => $fileName,
         ]);
 
         return Redirect::route('topup.store')->with('status', 'profile-updated');
