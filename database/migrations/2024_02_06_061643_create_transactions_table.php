@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('trx_code', 32);
             $table->enum('trx_type', ['topup', 'transaction']);
             $table->double('trx_amount', 9, 2);
+            $table->text('trx_description');
             $table->string('trx_file', 256);
             $table->timestamps();
         });
