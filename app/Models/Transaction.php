@@ -17,9 +17,11 @@ class Transaction extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'trx_user_id',
         'trx_code',
         'trx_type',
         'trx_amount',
+        'trx_description',
         'trx_file',
     ];
 

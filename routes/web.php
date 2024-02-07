@@ -24,14 +24,18 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::any('/topup', [TrxController::class, 'update'])->middleware(['auth', 'verified'])->name('topup');
 
 Route::middleware('auth')->group(function () {
+    // Profile Page
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/profile/transaction', [TrxController::class, 'trxlist'])->name('profile.transaction');
     Route::get('/backoffice/members', [MembersController::class, 'list'])->name('backoffice.members');
+    
+    // Transaction Page 
+    Route::get('/topup', [TrxController::class, 'topup'])->name('topup.form');
+    Route::post('/topup', [TrxController::class, 'store'])->name('topup.store');
 });
 
 require __DIR__.'/auth.php';

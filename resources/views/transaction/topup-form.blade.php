@@ -9,9 +9,9 @@
         </p>
     </header>
 
-    <form method="post" action="{{ route('topup') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('topup.store') }}" class="mt-6 space-y-6">
         @csrf
-        @method('patch')
+        @method('post')
 
         <div>
             <x-input-label for="name" :value="__('Amount')" />
@@ -21,27 +21,31 @@
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 2a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1M2 5h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm8 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"/>
                     </svg>
                     </div>
-                    <input type="number" id="currency-input" class="block p-2.5 w-full z-20 ps-10 text-sm text-gray-900 bg-gray-50 text-sm rounded-lg border-e-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-e-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500" placeholder="Enter amount" min="0.01" step="0.01" max="999999999999" required>
+                    <input type="number" id="currency-input" name="trx_amount"
+                        class="block p-2.5 w-full z-20 ps-10 text-sm text-gray-900 bg-gray-50 text-sm rounded-lg border-e-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-e-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500" placeholder="Enter amount" required>
                 </div>
             <x-input-error class="mt-2" :messages="$errors->get('trx_amount')" />
         </div>
         <div>
             <x-input-label for="trx_type" :value="__('Transaction')" />
-                <select id="trx_type" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
-                    <option selected>Choose a transaction</option>
-                    <option value="US">Top Up</option>
-                    <option value="CA">Pay</option>
+                <select id="trx_type" name="trx_type"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+                    <option value="">Choose a transaction</option>
+                    <option value="topup">Top Up</option>
+                    <option value="pay">Pay</option>
                 </select>
             <x-input-error class="mt-2" :messages="$errors->get('trx_type')" />
         </div>
         <div>
             <x-input-label for="trx_description" :value="__('Description')" />
-            <textarea id="message" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write your description here..."></textarea>
+            <textarea id="message" rows="3" name="trx_description"
+                class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write your description here..." required></textarea>
             <x-input-error class="mt-2" :messages="$errors->get('trx_description')" />
         </div>
         <div>
             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file_input">Upload transaction file</label>
-            <input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="file_input" type="file">
+            <input id="file_input" type="file" name="trx_file"
+                class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" required>
             <x-input-error class="mt-2" :messages="$errors->get('trx_file')" />
         </div>
 
